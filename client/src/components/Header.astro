@@ -1,5 +1,5 @@
 ---
-import ThemeMenu from "./ThemeMenu";
+import ThemePicker from "./ThemePicker.astro";
 import { TABS } from "../constants";
 
 import type { TabValue } from "../types";
@@ -48,9 +48,7 @@ const { activeNav } = Astro.props;
 
   <div class="header-actions" aria-label="Header actions">
     <div class="action-divider" aria-hidden="true"></div>
-    <div class="theme-action">
-      <ThemeMenu client:only="react" />
-    </div>
+    <ThemePicker />
     <a
       class="icon-link"
       href="https://github.com/aryxenv/tob-l"
@@ -74,7 +72,7 @@ const { activeNav } = Astro.props;
 </header>
 
 <script>
-  const normalizePathname = (pathname) => {
+  const normalizePathname = (pathname: string) => {
     if (pathname === "" || pathname === "/") {
       return "/";
     }
@@ -107,9 +105,12 @@ const { activeNav } = Astro.props;
   syncActiveNavigation();
 
   if (document.documentElement.dataset.tobNavSync !== "true") {
-    document.addEventListener("astro:page-load", syncActiveNavigation);
+    document.addEventListener("astro:page-load", () => {
+      syncActiveNavigation();
+    });
     document.documentElement.dataset.tobNavSync = "true";
   }
+
 </script>
 
 <style>
@@ -123,8 +124,8 @@ const { activeNav } = Astro.props;
     height: var(--header-height);
     padding: 0 20px;
     border-bottom: 1px solid var(--line);
-    background: #000;
-    color: #fefefe;
+    background: var(--header-bg);
+    color: var(--text-strong);
   }
 
   .brand-link {
@@ -174,21 +175,56 @@ const { activeNav } = Astro.props;
     height: 32px;
     padding: 6px 14px;
     border-radius: 6px;
+    background: transparent;
     color: inherit;
     font-size: 14px;
     font-weight: 400;
     opacity: 0.45;
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
     transition:
       opacity 0.2s ease,
       background-color 0.2s ease;
     white-space: nowrap;
   }
 
+  .nav-link:any-link,
+  .nav-link:link,
+  .nav-link:visited,
   .nav-link:hover,
-  .nav-link.is-active {
+  .nav-link:active,
+  .nav-link:focus,
+  .nav-link:focus-visible,
+  .nav-link:focus-within,
+  .nav-link[aria-current],
+  .nav-link[aria-current="page"],
+  .nav-link.is-active,
+  .nav-link.is-active:any-link,
+  .nav-link.is-active:link,
+  .nav-link.is-active:visited,
+  .nav-link.is-active:hover,
+  .nav-link.is-active:active,
+  .nav-link.is-active:focus,
+  .nav-link.is-active:focus-visible,
+  .nav-link.is-active:focus-within {
+    background: transparent;
+    background-image: none;
+  }
+
+  .nav-link:hover,
+  .nav-link:active,
+  .nav-link:focus,
+  .nav-link:focus-visible,
+  .nav-link:focus-within,
+  .nav-link[aria-current],
+  .nav-link[aria-current="page"],
+  .nav-link.is-active,
+  .nav-link.is-active:hover,
+  .nav-link.is-active:active,
+  .nav-link.is-active:focus,
+  .nav-link.is-active:focus-visible,
+  .nav-link.is-active:focus-within {
     opacity: 0.85;
-    background: var(--surface-hover);
   }
 
   .nav-link.is-active {
@@ -200,40 +236,15 @@ const { activeNav } = Astro.props;
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    gap: 4px;
-    margin-left: 8px;
+    gap: 8px;
     color: inherit;
   }
 
   .action-divider {
     width: 1px;
     height: 20px;
-    margin: 0 4px 0 8px;
+    margin: 0 8px 0 12px;
     background: var(--line-strong);
-  }
-
-  .theme-action {
-    display: inline-flex;
-    width: 32px;
-    height: 32px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .theme-action :global(.fui-Button) {
-    width: 32px;
-    min-width: 32px;
-    height: 32px;
-    color: inherit;
-    opacity: 0.45;
-    transition:
-      opacity 0.2s ease,
-      background-color 0.2s ease;
-  }
-
-  .theme-action :global(.fui-Button:hover) {
-    opacity: 0.85;
-    background: var(--surface-hover);
   }
 
   .icon-link {

@@ -24,6 +24,13 @@ const themeBootstrap = `
   const root = document.documentElement;
   const systemTheme = () =>
     window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  const syncThemeColorMeta = (resolvedTheme) => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+
+    if (meta) {
+      meta.setAttribute("content", resolvedTheme === "dark" ? "#000000" : "#ffffff");
+    }
+  };
 
   let preference = "system";
 
@@ -42,6 +49,7 @@ const themeBootstrap = `
   root.dataset.theme = resolvedTheme;
   root.dataset.themePreference = preference;
   root.style.colorScheme = resolvedTheme;
+  syncThemeColorMeta(resolvedTheme);
 })();
 `;
 ---

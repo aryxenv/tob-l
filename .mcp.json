@@ -1,5 +1,5 @@
 {
-  "servers": {
+  "mcpServers": {
     "fluent-agent": {
       "type": "http",
       "url": "https://chat.fluentui.dev/mcp/server"

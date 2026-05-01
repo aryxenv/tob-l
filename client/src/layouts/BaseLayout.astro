@@ -1,0 +1,72 @@
+---
+import Header from "../components/Header.astro";
+import { ClientRouter } from "astro:transitions";
+import "../index.css";
+
+import type { TabValue } from "../types";
+
+interface Props {
+  activeNav: TabValue;
+  title?: string;
+  description?: string;
+}
+
+const {
+  activeNav,
+  title = "TOB-L",
+  description = "Calculate and prepare Belgian tax on beursverrichtingen.",
+} = Astro.props;
+
+const themeBootstrap = `
+(() => {
+  const storageKey = "tob-l-theme";
+  const validPreferences = new Set(["light", "dark", "system"]);
+  const root = document.documentElement;
+  const systemTheme = () =>
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+  let preference = "system";
+
+  try {
+    const storedPreference = window.localStorage.getItem(storageKey);
+
+    if (storedPreference && validPreferences.has(storedPreference)) {
+      preference = storedPreference;
+    }
+  } catch (error) {
+    console.warn("TOB-L could not read the saved theme preference.", error);
+  }
+
+  const resolvedTheme = preference === "system" ? systemTheme() : preference;
+
+  root.dataset.theme = resolvedTheme;
+  root.dataset.themePreference = preference;
+  root.style.colorScheme = resolvedTheme;
+})();
+`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <script is:inline set:html={themeBootstrap}></script>
+    <ClientRouter />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <Header activeNav={activeNav} transition:name="site-header" transition:persist />
+      <main id="main-content" class="app-canvas" aria-label={title}>
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

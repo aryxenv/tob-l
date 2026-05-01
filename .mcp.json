@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "fluent-agent": {
+      "type": "http",
+      "url": "https://chat.fluentui.dev/mcp/server"
+    },
+    "astro": {
+      "type": "http",
+      "url": "https://mcp.docs.astro.build/mcp"
+    }
+  }
+}

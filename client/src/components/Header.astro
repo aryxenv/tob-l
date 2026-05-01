@@ -182,31 +182,17 @@ const { activeNav } = Astro.props;
     opacity: 0.45;
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
-    transition:
-      opacity 0.2s ease,
-      background-color 0.2s ease;
+    transition: opacity 0.2s ease;
     white-space: nowrap;
   }
 
-  .nav-link:any-link,
-  .nav-link:link,
-  .nav-link:visited,
   .nav-link:hover,
   .nav-link:active,
   .nav-link:focus,
   .nav-link:focus-visible,
   .nav-link:focus-within,
-  .nav-link[aria-current],
   .nav-link[aria-current="page"],
-  .nav-link.is-active,
-  .nav-link.is-active:any-link,
-  .nav-link.is-active:link,
-  .nav-link.is-active:visited,
-  .nav-link.is-active:hover,
-  .nav-link.is-active:active,
-  .nav-link.is-active:focus,
-  .nav-link.is-active:focus-visible,
-  .nav-link.is-active:focus-within {
+  .nav-link.is-active {
     background: transparent;
     background-image: none;
   }
@@ -216,14 +202,8 @@ const { activeNav } = Astro.props;
   .nav-link:focus,
   .nav-link:focus-visible,
   .nav-link:focus-within,
-  .nav-link[aria-current],
   .nav-link[aria-current="page"],
-  .nav-link.is-active,
-  .nav-link.is-active:hover,
-  .nav-link.is-active:active,
-  .nav-link.is-active:focus,
-  .nav-link.is-active:focus-visible,
-  .nav-link.is-active:focus-within {
+  .nav-link.is-active {
     opacity: 0.85;
   }
 

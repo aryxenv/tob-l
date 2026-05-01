@@ -160,9 +160,9 @@
 
   const readThemePreference = (): ThemePreference => {
     try {
-      return isThemePreference(window.localStorage.getItem(themeStorageKey))
-        ? (window.localStorage.getItem(themeStorageKey) as ThemePreference)
-        : "system";
+      const storedPreference = window.localStorage.getItem(themeStorageKey);
+
+      return isThemePreference(storedPreference) ? storedPreference : "system";
     } catch (error) {
       console.warn("TOB-L could not read the saved theme preference.", error);
       return "system";
@@ -242,7 +242,10 @@
     }
   };
 
-  const syncThemePicker = (preference: ThemePreference, resolvedTheme: ResolvedTheme) => {
+  const syncThemePicker = (
+    preference: ThemePreference,
+    resolvedTheme: ResolvedTheme,
+  ) => {
     const trigger = document.querySelector<HTMLButtonElement>(
       "[data-theme-trigger]",
     );
@@ -319,14 +322,10 @@
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         toggleThemeMenu();
-      }
-
-      if (event.key === "ArrowDown") {
+      } else if (event.key === "ArrowDown") {
         event.preventDefault();
         openThemeMenu();
-      }
-
-      if (event.key === "Escape") {
+      } else if (event.key === "Escape") {
         closeThemeMenu();
       }
     });
@@ -348,34 +347,23 @@
       if (event.key === "Escape") {
         event.preventDefault();
         closeThemeMenu(true);
-      }
-
-      if (event.key === "Enter" || event.key === " ") {
+      } else if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         (document.activeElement as HTMLElement | null)?.click();
-      }
-
-      if (event.key === "ArrowDown") {
+      } else if (event.key === "ArrowDown") {
         event.preventDefault();
         focusThemeOption("next");
-      }
-
-      if (event.key === "ArrowUp") {
+      } else if (event.key === "ArrowUp") {
         event.preventDefault();
         focusThemeOption("previous");
-      }
-
-      if (event.key === "Home") {
+      } else if (event.key === "Home") {
         event.preventDefault();
         focusThemeOption("first");
-      }
-
-      if (event.key === "End") {
+      } else if (event.key === "End") {
         event.preventDefault();
         focusThemeOption("last");
       }
     });
-
   };
 
   initializeThemePicker();
@@ -446,9 +434,7 @@
     border-radius: 6px;
     opacity: 0.45;
     cursor: pointer;
-    transition:
-      opacity 0.2s ease,
-      background-color 0.2s ease;
+    transition: opacity 0.2s ease;
   }
 
   .theme-trigger:hover,

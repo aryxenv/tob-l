@@ -27,24 +27,6 @@
   --popover-shadow: 0 16px 40px rgb(0 0 0 / 0.18);
 }
 
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg: #fff;
-  --canvas: #fff;
-  --canvas-quiet: #f7f7f7;
-  --header-bg: #fff;
-  --surface-hover: rgb(0 0 0 / 0.06);
-  --brand-mark-bg: #fff;
-  --line: #e5e5e5;
-  --line-strong: #d0d0d0;
-  --text-strong: #111;
-  --text-muted: #616161;
-  --accent-line: #8a8a8a;
-  --focus-ring: #0f6cbd;
-  --scroll-thumb: #c7c7c7;
-  --popover-shadow: 0 16px 40px rgb(0 0 0 / 0.18);
-}
-
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #000;
@@ -174,7 +156,6 @@ p {
 
 .app-canvas {
   min-height: calc(100vh - var(--header-height));
-  border-top: 0 solid transparent;
   background: var(--canvas);
 }
 

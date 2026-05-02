@@ -25,6 +25,7 @@
   --focus-ring: #0f6cbd;
   --scroll-thumb: #c7c7c7;
   --popover-shadow: 0 16px 40px rgb(0 0 0 / 0.18);
+  --broker-logo-filter: invert(1);
 }
 
 :root[data-theme="dark"] {
@@ -43,6 +44,7 @@
   --focus-ring: #8ab4f8;
   --scroll-thumb: #4a4a4a;
   --popover-shadow: 0 16px 40px rgb(0 0 0 / 0.36);
+  --broker-logo-filter: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -62,6 +64,7 @@
     --focus-ring: #8ab4f8;
     --scroll-thumb: #4a4a4a;
     --popover-shadow: 0 16px 40px rgb(0 0 0 / 0.36);
+    --broker-logo-filter: none;
   }
 }
 

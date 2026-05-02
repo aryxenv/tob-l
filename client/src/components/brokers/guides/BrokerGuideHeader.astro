@@ -1,19 +1,17 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { placeholderLogoSrc } from "../../ui/logoPlaceholder";
+import { getBrokerLogoSrc } from "../brokerGuides";
 
 interface Props {
   guide: CollectionEntry<"brokerGuides">;
 }
 
 const { guide } = Astro.props;
-const logoSrc = guide.data.logoSrc ?? placeholderLogoSrc;
+const logoSrc = getBrokerLogoSrc(guide.id, guide.data.logoSrc);
 ---
 
 <header class="guide-header">
-  <span class="logo-well" aria-hidden="true">
-    <img src={logoSrc} alt="" loading="lazy" />
-  </span>
+  <img class="broker-logo" src={logoSrc} alt="" loading="lazy" aria-hidden="true" />
   <div class="header-copy">
     <h1 id="broker-guide-title">{guide.data.name}</h1>
   </div>
@@ -26,24 +24,12 @@ const logoSrc = guide.data.logoSrc ?? placeholderLogoSrc;
     gap: var(--space-5);
   }
 
-  .logo-well {
-    display: inline-flex;
+  .broker-logo {
+    display: block;
     width: 72px;
     height: 72px;
     flex: 0 0 72px;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius-2);
-    background: transparent;
-  }
-
-  .logo-well img {
-    display: block;
-    max-width: 100%;
-    max-height: 100%;
-    padding: var(--space-2);
+    filter: var(--broker-logo-filter);
     object-fit: contain;
   }
 

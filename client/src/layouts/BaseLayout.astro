@@ -31,6 +31,12 @@ const themeBootstrap = `
       meta.setAttribute("content", resolvedTheme === "dark" ? "#000000" : "#ffffff");
     }
   };
+  const syncThemeVariables = (resolvedTheme) => {
+    root.style.setProperty(
+      "--broker-logo-filter",
+      resolvedTheme === "dark" ? "none" : "invert(1)",
+    );
+  };
 
   let preference = "system";
 
@@ -49,6 +55,7 @@ const themeBootstrap = `
   root.dataset.theme = resolvedTheme;
   root.dataset.themePreference = preference;
   root.style.colorScheme = resolvedTheme;
+  syncThemeVariables(resolvedTheme);
   syncThemeColorMeta(resolvedTheme);
 })();
 `;

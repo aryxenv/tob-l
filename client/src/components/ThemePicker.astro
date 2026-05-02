@@ -144,6 +144,13 @@
     meta?.setAttribute("content", themeColor);
   };
 
+  const syncThemeVariables = (resolvedTheme: ResolvedTheme, root: HTMLElement) => {
+    root.style.setProperty(
+      "--broker-logo-filter",
+      resolvedTheme === "dark" ? "none" : "invert(1)",
+    );
+  };
+
   const resolveTheme = (preference: ThemePreference): ResolvedTheme =>
     preference === "system" ? getSystemTheme() : preference;
 
@@ -187,6 +194,7 @@
     root.dataset.theme = resolvedTheme;
     root.dataset.themePreference = preference;
     root.style.colorScheme = resolvedTheme;
+    syncThemeVariables(resolvedTheme, root);
     syncThemeColorMeta(resolvedTheme, targetDocument);
 
     return resolvedTheme;

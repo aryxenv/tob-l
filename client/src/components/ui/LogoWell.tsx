@@ -1,4 +1,4 @@
-import { makeStyles, mergeClasses, tokens } from "./fluent";
+import { makeStyles, mergeClasses } from "./fluent";
 import { placeholderLogoSrc } from "./logoPlaceholder";
 
 const useStyles = makeStyles({
@@ -9,18 +9,13 @@ const useStyles = makeStyles({
     width: "64px",
     height: "64px",
     flexShrink: 0,
-    borderRadius: tokens.borderRadiusMedium,
-    border: `1px solid ${tokens.colorNeutralStroke2}`,
-    backgroundColor: "transparent",
-    color: tokens.colorNeutralForeground2,
-    overflow: "hidden",
   },
   image: {
     display: "block",
     maxWidth: "100%",
     maxHeight: "100%",
     objectFit: "contain",
-    padding: tokens.spacingHorizontalS,
+    filter: "var(--broker-logo-filter)",
   },
 });
 

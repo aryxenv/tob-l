@@ -1,5 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 import { placeholderLogoSrc } from "../ui/logoPlaceholder";
+import { slugifyBrokerName } from "./brokerSlug";
+import type { BrokerSummary } from "./brokerTypes";
 import boleroLogoSrc from "./logos/bolero.svg?url";
 import buxLogoSrc from "./logos/bux.svg?url";
 import degiroFrLogoSrc from "./logos/degiro-fr.svg?url";
@@ -13,11 +15,10 @@ import lynxLogoSrc from "./logos/lynx.svg?url";
 import medirectLogoSrc from "./logos/medirect.svg?url";
 import mexemLogoSrc from "./logos/mexem.svg?url";
 import reBelLogoSrc from "./logos/re-bel.svg?url";
+import revolutLogoSrc from "./logos/revolut.svg?url";
 import saxoBankLogoSrc from "./logos/saxo-bank.svg?url";
 import tradeRepublicLogoSrc from "./logos/trade-republic.svg?url";
 import trading212LogoSrc from "./logos/trading-212.svg?url";
-import { slugifyBrokerName } from "./brokerSlug";
-import type { BrokerSummary } from "./brokerTypes";
 
 type BrokerGuideEntry = CollectionEntry<"brokerGuides">;
 
@@ -35,6 +36,7 @@ const brokerLogoSrcById: Record<string, string> = {
   medirect: medirectLogoSrc,
   mexem: mexemLogoSrc,
   "re-bel": reBelLogoSrc,
+  revolut: revolutLogoSrc,
   "saxo-bank": saxoBankLogoSrc,
   "trade-republic": tradeRepublicLogoSrc,
   "trading-212": trading212LogoSrc,

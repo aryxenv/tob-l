@@ -1,0 +1,30 @@
+---
+const { href, ...attributes } = Astro.props;
+const isExternal = typeof href === "string" && /^https?:\/\//.test(href);
+---
+
+<a
+  class="markdown-link"
+  href={href}
+  target={isExternal ? "_blank" : undefined}
+  rel={isExternal ? "noopener noreferrer" : undefined}
+  {...attributes}
+>
+  <slot />
+</a>
+
+<style>
+  .markdown-link {
+    color: var(--text-strong);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .markdown-link:focus-visible {
+    border-radius: var(--radius-1);
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+</style>

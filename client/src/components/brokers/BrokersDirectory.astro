@@ -1,0 +1,56 @@
+---
+import BrokerDirectoryIsland from "./BrokerDirectoryIsland";
+import type { BrokerSummary } from "./brokerTypes";
+
+interface Props {
+  brokers: BrokerSummary[];
+}
+
+const { brokers } = Astro.props;
+---
+
+<section class="brokers-directory" aria-labelledby="brokers-directory-title">
+  <h2 id="brokers-directory-title" class="visually-hidden">Broker directory</h2>
+  <BrokerDirectoryIsland brokers={brokers} client:load />
+</section>
+
+<style>
+  .brokers-directory {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 20px clamp(56px, 8vw, 96px);
+  }
+
+  .brokers-directory-heading {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 680px;
+  }
+
+  .brokers-directory-heading h2 {
+    color: var(--text-strong);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+  }
+
+  .brokers-directory-heading p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+    padding: 0;
+  }
+</style>

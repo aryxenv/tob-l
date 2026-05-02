@@ -1,0 +1,49 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BrokerGuideArticle from "./BrokerGuideArticle.astro";
+import BrokerGuideHeader from "./BrokerGuideHeader.astro";
+
+interface Props {
+  guide: CollectionEntry<"brokerGuides">;
+}
+
+const { guide } = Astro.props;
+---
+
+<section class="broker-guide-shell" aria-labelledby="broker-guide-title">
+  <a class="back-link" href="/brokers">Back to brokers</a>
+  <BrokerGuideHeader guide={guide} />
+  <BrokerGuideArticle>
+    <slot />
+  </BrokerGuideArticle>
+</section>
+
+<style>
+  .broker-guide-shell {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 880px;
+    margin: 0 auto;
+    padding: clamp(48px, 8vw, 88px) 20px clamp(56px, 8vw, 96px);
+    color: var(--text-strong);
+  }
+
+  .back-link {
+    width: fit-content;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: var(--text-strong);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .back-link:focus-visible {
+    border-radius: var(--radius-1);
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 4px;
+  }
+</style>

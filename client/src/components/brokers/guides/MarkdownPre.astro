@@ -1,0 +1,19 @@
+<pre class="markdown-pre"><slot /></pre>
+
+<style>
+  .markdown-pre {
+    overflow-x: auto;
+    margin: 0;
+    padding: var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-2);
+    background: var(--canvas-quiet);
+    color: var(--text-strong);
+  }
+
+  .markdown-pre :global(code) {
+    border: 0;
+    background: transparent;
+    padding: 0;
+  }
+</style>

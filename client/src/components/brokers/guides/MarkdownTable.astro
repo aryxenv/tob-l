@@ -1,0 +1,30 @@
+<div class="table-scroll">
+  <table class="markdown-table">
+    <slot />
+  </table>
+</div>
+
+<style>
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .markdown-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-strong);
+  }
+
+  .markdown-table :global(th),
+  .markdown-table :global(td) {
+    padding: var(--space-3);
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .markdown-table :global(th) {
+    background: var(--canvas-quiet);
+    font-weight: 600;
+  }
+</style>

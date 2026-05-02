@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BrokerGuideLayout from "../../components/brokers/guides/BrokerGuideLayout.astro";
+import { markdownComponents } from "../../components/brokers/guides/markdownComponents";
+
+export async function getStaticPaths() {
+  const guides = await getCollection("brokerGuides");
+
+  return guides.map((guide) => ({
+    params: { brokerId: guide.id },
+    props: { guide },
+  }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+const description =
+  guide.data.description ??
+  `Learn how to get the data you need from ${guide.data.name} for TOB-L.`;
+---
+
+<BaseLayout
+  activeNav="brokers"
+  title={`${guide.data.name} | Brokers | TOB-L`}
+  description={description}
+>
+  <BrokerGuideLayout guide={guide}>
+    <Content components={markdownComponents} />
+  </BrokerGuideLayout>
+</BaseLayout>

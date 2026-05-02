@@ -1,0 +1,22 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import BrokersPage from "../../components/pages/BrokersPage.astro";
+import { getBrokerGuideSummaries } from "../../components/brokers/brokerGuides";
+
+const guides = await getCollection("brokerGuides");
+
+if (guides.length === 0) {
+  console.warn("No broker guides were loaded from the brokerGuides collection.");
+}
+
+const brokers = getBrokerGuideSummaries(guides);
+---
+
+<BaseLayout
+  activeNav="brokers"
+  title="Brokers | TOB-L"
+  description="Get the data you need to report TOB with TOB-L from your broker."
+>
+  <BrokersPage brokers={brokers} />
+</BaseLayout>

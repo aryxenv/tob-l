@@ -1,5 +1,17 @@
 ---
-import PageWorkspace from "./PageWorkspace.astro";
+import BrokersDirectory from "../brokers/BrokersDirectory.astro";
+import type { BrokerSummary } from "../brokers/brokerTypes";
+import PageHero from "../ui/PageHero.astro";
+
+interface Props {
+  brokers: BrokerSummary[];
+}
+
+const { brokers } = Astro.props;
 ---
 
-<PageWorkspace title="Brokers" />
+<PageHero
+  title="Brokers"
+  subtitle="Get the data you need to report TOB with TOB-L from your broker."
+/>
+<BrokersDirectory brokers={brokers} />

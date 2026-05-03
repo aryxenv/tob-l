@@ -1,11 +1,21 @@
-<div class="theme-picker" data-theme-picker>
+---
+interface Props {
+  id?: string;
+  placement?: "bottom-end" | "top-end" | "top-start";
+  label?: string;
+}
+
+const { id = "theme-menu", placement = "bottom-end", label } = Astro.props;
+---
+
+<div class="theme-picker" data-theme-picker data-placement={placement}>
   <button
-    class="theme-trigger"
+    class:list={["theme-trigger", label && "theme-trigger--labeled"]}
     type="button"
     aria-label="Theme: System"
     aria-haspopup="menu"
     aria-expanded="false"
-    aria-controls="theme-menu"
+    aria-controls={id}
     title="Theme: System"
     data-theme-trigger
   >
@@ -42,9 +52,10 @@
     >
       <path d="M20.03 17a10 10 0 0 1-16.9.68.75.75 0 0 1 .36-1.13c3.77-1.35 5.79-2.91 6.96-5.15 1.23-2.35 1.55-4.93.69-8.46A.75.75 0 0 1 11.9 2 10 10 0 0 1 20.03 17Zm-8.25-4.9c-1.25 2.39-3.31 4.1-6.82 5.5a8.49 8.49 0 0 0 13.77-1.35 8.5 8.5 0 0 0-5.9-12.63c.64 3.39.22 6.05-1.05 8.48Z" />
     </svg>
+    {label && <span class="theme-trigger-label">{label}</span>}
   </button>
   <div
-    id="theme-menu"
+    id={id}
     class="theme-menu"
     role="menu"
     aria-label="Choose theme"
@@ -203,11 +214,12 @@
   const applyThemePreference = (preference: ThemePreference): ResolvedTheme =>
     applyThemeAttributes(preference);
 
-  const closeThemeMenu = (restoreFocus = false) => {
-    const trigger = document.querySelector<HTMLButtonElement>(
-      "[data-theme-trigger]",
-    );
-    const menu = document.querySelector<HTMLElement>("[data-theme-menu]");
+  const getThemePickers = () =>
+    Array.from(document.querySelectorAll<HTMLElement>("[data-theme-picker]"));
+
+  const closeThemeMenu = (picker: HTMLElement, restoreFocus = false) => {
+    const trigger = picker.querySelector<HTMLButtonElement>("[data-theme-trigger]");
+    const menu = picker.querySelector<HTMLElement>("[data-theme-menu]");
 
     if (!trigger || !menu) {
       return;
@@ -221,12 +233,16 @@
     }
   };
 
-  const openThemeMenu = () => {
-    const trigger = document.querySelector<HTMLButtonElement>(
-      "[data-theme-trigger]",
-    );
-    const menu = document.querySelector<HTMLElement>("[data-theme-menu]");
-    const checkedOption = document.querySelector<HTMLButtonElement>(
+  const closeAllThemeMenus = () => {
+    getThemePickers().forEach((picker) => {
+      closeThemeMenu(picker);
+    });
+  };
+
+  const openThemeMenu = (picker: HTMLElement) => {
+    const trigger = picker.querySelector<HTMLButtonElement>("[data-theme-trigger]");
+    const menu = picker.querySelector<HTMLElement>("[data-theme-menu]");
+    const checkedOption = picker.querySelector<HTMLButtonElement>(
       '[data-theme-option][aria-checked="true"]',
     );
 
@@ -240,40 +256,45 @@
       ?.focus();
   };
 
-  const toggleThemeMenu = () => {
-    const menu = document.querySelector<HTMLElement>("[data-theme-menu]");
+  const toggleThemeMenu = (picker: HTMLElement) => {
+    const menu = picker.querySelector<HTMLElement>("[data-theme-menu]");
 
     if (menu?.hidden === false) {
-      closeThemeMenu();
+      closeThemeMenu(picker);
     } else {
-      openThemeMenu();
+      closeAllThemeMenus();
+      openThemeMenu(picker);
     }
   };
 
   const syncThemePicker = (
     preference: ThemePreference,
     resolvedTheme: ResolvedTheme,
+    picker?: HTMLElement,
   ) => {
-    const trigger = document.querySelector<HTMLButtonElement>(
-      "[data-theme-trigger]",
-    );
-    const options =
-      document.querySelectorAll<HTMLButtonElement>("[data-theme-option]");
+    const pickers = picker ? [picker] : getThemePickers();
     const label = getPreferenceLabel(preference);
 
-    trigger?.setAttribute(
-      "aria-label",
-      `Theme: ${label}${preference === "system" ? ` (currently ${getPreferenceLabel(resolvedTheme)})` : ""}`,
-    );
-    trigger?.setAttribute("title", `Theme: ${label}`);
-    trigger?.setAttribute("data-theme-preference", preference);
+    pickers.forEach((themePicker) => {
+      const trigger =
+        themePicker.querySelector<HTMLButtonElement>("[data-theme-trigger]");
+      const options =
+        themePicker.querySelectorAll<HTMLButtonElement>("[data-theme-option]");
 
-    options.forEach((option) => {
-      option.setAttribute(
-        "aria-checked",
-        option.dataset.themeOption === preference ? "true" : "false",
+      trigger?.setAttribute(
+        "aria-label",
+        `Theme: ${label}${preference === "system" ? ` (currently ${getPreferenceLabel(resolvedTheme)})` : ""}`,
       );
-      option.tabIndex = option.dataset.themeOption === preference ? 0 : -1;
+      trigger?.setAttribute("title", `Theme: ${label}`);
+      trigger?.setAttribute("data-theme-preference", preference);
+
+      options.forEach((option) => {
+        option.setAttribute(
+          "aria-checked",
+          option.dataset.themeOption === preference ? "true" : "false",
+        );
+        option.tabIndex = option.dataset.themeOption === preference ? 0 : -1;
+      });
     });
   };
 
@@ -283,9 +304,12 @@
     syncThemePicker(preference, resolvedTheme);
   };
 
-  const focusThemeOption = (direction: "first" | "last" | "next" | "previous") => {
+  const focusThemeOption = (
+    picker: HTMLElement,
+    direction: "first" | "last" | "next" | "previous",
+  ) => {
     const options = Array.from(
-      document.querySelectorAll<HTMLButtonElement>("[data-theme-option]"),
+      picker.querySelectorAll<HTMLButtonElement>("[data-theme-option]"),
     );
     const activeIndex = options.findIndex(
       (option) => option === document.activeElement,
@@ -307,74 +331,87 @@
     options[nextIndex]?.focus();
   };
 
-  const initializeThemePicker = () => {
-    const picker = document.querySelector<HTMLElement>("[data-theme-picker]");
-    const trigger = document.querySelector<HTMLButtonElement>(
-      "[data-theme-trigger]",
-    );
-    const menu = document.querySelector<HTMLElement>("[data-theme-menu]");
-
-    if (!picker || !trigger || !menu || picker.dataset.initialized === "true") {
-      const preference = readThemePreference();
-      syncThemePicker(preference, applyThemePreference(preference));
-      return;
-    }
-
-    picker.dataset.initialized = "true";
-
+  const initializeThemePickers = () => {
     const preference = readThemePreference();
-    setThemePreference(preference);
+    const resolvedTheme = applyThemePreference(preference);
 
-    trigger.addEventListener("click", toggleThemeMenu);
-    trigger.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        toggleThemeMenu();
-      } else if (event.key === "ArrowDown") {
-        event.preventDefault();
-        openThemeMenu();
-      } else if (event.key === "Escape") {
-        closeThemeMenu();
-      }
-    });
+    getThemePickers().forEach((picker) => {
+      const trigger =
+        picker.querySelector<HTMLButtonElement>("[data-theme-trigger]");
+      const menu = picker.querySelector<HTMLElement>("[data-theme-menu]");
 
-    menu.addEventListener("click", (event) => {
-      const option = (event.target as Element).closest<HTMLButtonElement>(
-        "[data-theme-option]",
-      );
+      syncThemePicker(preference, resolvedTheme, picker);
 
-      if (!option || !isThemePreference(option.dataset.themeOption)) {
+      if (!trigger || !menu || picker.dataset.initialized === "true") {
         return;
       }
 
-      setThemePreference(option.dataset.themeOption);
-      closeThemeMenu(true);
-    });
+      picker.dataset.initialized = "true";
 
-    menu.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        closeThemeMenu(true);
-      } else if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        (document.activeElement as HTMLElement | null)?.click();
-      } else if (event.key === "ArrowDown") {
-        event.preventDefault();
-        focusThemeOption("next");
-      } else if (event.key === "ArrowUp") {
-        event.preventDefault();
-        focusThemeOption("previous");
-      } else if (event.key === "Home") {
-        event.preventDefault();
-        focusThemeOption("first");
-      } else if (event.key === "End") {
-        event.preventDefault();
-        focusThemeOption("last");
-      }
+      trigger.addEventListener("click", () => toggleThemeMenu(picker));
+      trigger.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          toggleThemeMenu(picker);
+        } else if (event.key === "ArrowDown") {
+          event.preventDefault();
+          openThemeMenu(picker);
+        } else if (event.key === "Escape") {
+          closeThemeMenu(picker);
+        }
+      });
+
+      menu.addEventListener("click", (event) => {
+        const option = (event.target as Element).closest<HTMLButtonElement>(
+          "[data-theme-option]",
+        );
+
+        if (!option || !isThemePreference(option.dataset.themeOption)) {
+          return;
+        }
+
+        setThemePreference(option.dataset.themeOption);
+        closeThemeMenu(picker, true);
+      });
+
+      menu.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeThemeMenu(picker, true);
+        } else if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          (document.activeElement as HTMLElement | null)?.click();
+        } else if (event.key === "ArrowDown") {
+          event.preventDefault();
+          focusThemeOption(picker, "next");
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          focusThemeOption(picker, "previous");
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          focusThemeOption(picker, "first");
+        } else if (event.key === "End") {
+          event.preventDefault();
+          focusThemeOption(picker, "last");
+        }
+      });
+
+      picker.addEventListener("focusout", (event) => {
+        const nextFocusedElement = event.relatedTarget;
+
+        if (
+          nextFocusedElement instanceof Node &&
+          picker.contains(nextFocusedElement)
+        ) {
+          return;
+        }
+
+        closeThemeMenu(picker);
+      });
     });
   };
 
-  initializeThemePicker();
+  initializeThemePickers();
 
   if (document.documentElement.dataset.tobThemePicker !== "true") {
     themeMediaQuery.addEventListener("change", () => {
@@ -386,16 +423,16 @@
     });
 
     document.addEventListener("click", (event) => {
-      const picker = document.querySelector<HTMLElement>("[data-theme-picker]");
-
-      if (picker && !picker.contains(event.target as Node)) {
-        closeThemeMenu();
-      }
+      getThemePickers().forEach((picker) => {
+        if (!picker.contains(event.target as Node)) {
+          closeThemeMenu(picker);
+        }
+      });
     });
 
-    document.addEventListener("astro:page-load", initializeThemePicker);
+    document.addEventListener("astro:page-load", initializeThemePickers);
     document.addEventListener("astro:before-swap", (event) => {
-      closeThemeMenu();
+      closeAllThemeMenus();
 
       const newDocument = (event as Event & { newDocument?: Document })
         .newDocument;
@@ -450,8 +487,20 @@
   .theme-trigger:focus-visible,
   .theme-trigger[aria-expanded="true"] {
     opacity: 0.85;
-    background: transparent;
+    background: var(--surface-hover);
     background-image: none;
+  }
+
+  .theme-trigger--labeled {
+    width: auto;
+    min-width: 32px;
+    gap: 8px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  .theme-trigger-label {
+    line-height: 1;
   }
 
   .theme-trigger:focus-visible,
@@ -491,6 +540,23 @@
     animation: theme-menu-fade 140ms ease-out;
   }
 
+  .theme-picker[data-placement="top-end"] .theme-menu {
+    top: auto;
+    bottom: calc(100% + 12px);
+  }
+
+  .theme-picker[data-placement="top-start"] .theme-menu {
+    top: auto;
+    right: auto;
+    bottom: calc(100% + 12px);
+    left: 0;
+  }
+
+  .theme-picker[data-placement="top-start"] .theme-menu:not([hidden]),
+  .theme-picker[data-placement="top-end"] .theme-menu:not([hidden]) {
+    animation-name: theme-menu-rise;
+  }
+
   .theme-menu[hidden] {
     display: none;
   }
@@ -504,6 +570,28 @@
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes theme-menu-rise {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-trigger {
+      transition: none;
+    }
+
+    .theme-menu:not([hidden]) {
+      animation: none;
     }
   }
 

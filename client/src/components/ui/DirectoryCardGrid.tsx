@@ -4,10 +4,8 @@ import { makeStyles, mergeClasses, tokens } from "./fluent";
 const useStyles = makeStyles({
   root: {
     display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(min(100%, 240px), clamp(240px, 28vw, 320px)))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
     gap: tokens.spacingHorizontalL,
-    justifyContent: "start",
     alignItems: "start",
     margin: 0,
     padding: 0,

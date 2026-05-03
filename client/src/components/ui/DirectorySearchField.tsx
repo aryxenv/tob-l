@@ -13,6 +13,18 @@ const useStyles = makeStyles({
   },
   input: {
     width: "100%",
+
+    "::after": {
+      borderBottomColor: tokens.colorNeutralStrokeAccessible,
+    },
+
+    ":focus-within::after": {
+      borderBottomColor: tokens.colorNeutralStrokeAccessible,
+    },
+
+    ":focus-within:active::after": {
+      borderBottomColor: tokens.colorNeutralStrokeAccessible,
+    },
   },
 });
 

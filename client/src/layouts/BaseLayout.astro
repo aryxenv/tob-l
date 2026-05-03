@@ -79,7 +79,12 @@ const themeBootstrap = `
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="app-shell">
       <Header activeNav={activeNav} transition:name="site-header" transition:persist />
-      <main id="main-content" class="app-canvas" aria-label={title}>
+      <main
+        id="main-content"
+        class="app-canvas"
+        aria-label={title}
+        tabindex="-1"
+      >
         <slot />
       </main>
     </div>
